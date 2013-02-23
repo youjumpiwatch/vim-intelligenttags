@@ -1,3 +1,8 @@
+IMPROVEMENTS
+============
+
+I forked this project to fix two minor issues on FreeBSD.
+
 Intelligent Tags is designed to handle tag creation for you.  Tradionally, you
 would run ctags on your project at regular intervals (or in a cron job), but I
 struggled with this approach for several reasons:
