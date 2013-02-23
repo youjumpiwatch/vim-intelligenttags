@@ -102,11 +102,11 @@ function s:handleFileTags(name, depth)
     endif
 
     if file_mod_time > getftime(tName) || s:forceTags
-        silent! call system('"' . s:cmdString . tName . '" "' . a:name . '""')
+        silent! call system(s:cmdString . tName . '" "' . a:name . '"')
     endif
     " Why the triple escape? See :h option-backslash
     " execute 'setl tags+=' . fnameescape(fnameescape(fnameescape(findfile(tName))))
-    let b:tags .= fnameescape(fnameescape(fnameescape(findfile(tName)))) . ','
+    let b:tags .= fnameescape(fnameescape(fnameescape(tName))) . ','
 
     if a:depth - g:Itags_Depth == 0
         return
