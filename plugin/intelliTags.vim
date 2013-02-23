@@ -72,7 +72,7 @@
         " file and run again.  If the file is found, update the .incl file.
         " *
     " .incl File format:
-    " include_string	file_found	depth	type(local, header, normal?)
+    " include_string  file_found  depth  type(local, header, normal?)
 if exists('g:Itags_loaded')
     finish
 endif
@@ -327,6 +327,7 @@ function s:Init()
     endfor
 
     command! -nargs=0 -bar ItagsRun call s:iTagMain(expand("%:p"))
+    command! -nargs=0 -bar ItagsRunProj call s:iTagWalk(getcwd())
     command! -nargs=0 -bar ItagsRunLocal let b:Itags_Depth_local = g:Itags_Depth | let g:Itags_Depth=0 | ItagsRun | let g:Itags_Depth=b:Itags_Depth_local
 
     augroup iTagsAU
@@ -343,6 +344,14 @@ function s:Init()
 
     command! -nargs=0 -bar ItagsRegenAll let s:forceTags = 1 | let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0 | let s:forceTags = 0
 
+endfunction
+
+function! s:iTagWalk(root)
+    let b:allFiles = substitute(system('find '.a:root.' -name "*" | grep -E -v "\.(svn|git|neocc|tags)"'),'\n','|','g')
+    let b:allFilesList = split(b:allFiles, '|')
+    for f in b:allFilesList
+        call s:iTagMain(f)
+    endfor
 endfunction
 
 function! s:WideMsg(cmd, msg)
