@@ -271,7 +271,7 @@ function s:iTagMain(name)
     endif
     unlet b:processedFiles
     execute 'setl tags+='.b:tags
-    redraw!
+    " redraw!
 endfunction
 
 function s:Init()
@@ -316,9 +316,9 @@ function s:Init()
     " This seemed the best way to determine if it makes sense to
     "  try and run on the given buffer
     " ctags lists c++, but vim calls it cpp, etc...
-    let typeMapping = {'c++': ['cpp'], 'c#': ['cs'], 'tcl': ['expect'], 'sh': ['csh', 'zsh'], }
+    let typeMapping = {'c++': ['cc', 'cpp'], 'c#': ['cs'], 'tcl': ['expect'], 'sh': ['csh', 'zsh'], }
     " let RevTypeMapping = {'cpp': 'c++', 'cs': 'c#', 'expect': 'tcl', 'csh': 'sh', 'zsh': 'sh', }
-    let supportList = split(system(g:Itags_Ctags_Cmd.' --list-languages'), '\n')
+    let supportList = split(tolower(system(g:Itags_Ctags_Cmd.' --list-languages')), '\n')
     for type in supportList
         let type = tolower(type)
         if has_key(typeMapping, type)
@@ -326,8 +326,8 @@ function s:Init()
         endif
     endfor
 
-    command! -nargs=0 -bar ItagsRun call s:iTagMain(expand("%:p"))
-    command! -nargs=0 -bar ItagsRunLocal let b:Itags_Depth_local = g:Itags_Depth | let g:Itags_Depth=0 | ItagsRun | let g:Itags_Depth=b:Itags_Depth_local
+    command! -nargs=0 -bar ItagsRun call s:iTagMain(expand("%:p")) | call s:WideMsg('echo', 'Tags have been created!')
+    command! -nargs=0 -bar ItagsRunLocal let b:Itags_Depth_local = g:Itags_Depth | let g:Itags_Depth=0 | ItagsRun | let g:Itags_Depth=b:Itags_Depth_local | call s:WideMsg('echo', 'Tags have been created!')
 
     augroup iTagsAU
         au!
@@ -336,12 +336,12 @@ function s:Init()
     augroup END
 
     let s:forceTags = 0
-    command! -nargs=0 -bar ItagsRegenTags let s:forceTags = 1 | ItagsRun | let s:forceTags=0
+    command! -nargs=0 -bar ItagsRegenTags let s:forceTags = 1 | ItagsRun | let s:forceTags=0 | call s:WideMsg('echo', 'Tags have been created!')
 
     let s:forceIncl = 0
-    command! -nargs=0 -bar ItagsRegenIncl let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0
+    command! -nargs=0 -bar ItagsRegenIncl let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0 | call s:WideMsg('echo', 'Tags have been created!')
 
-    command! -nargs=0 -bar ItagsRegenAll let s:forceTags = 1 | let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0 | let s:forceTags = 0
+    command! -nargs=0 -bar ItagsRegenAll let s:forceTags = 1 | let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0 | let s:forceTags = 0 | call s:WideMsg('echo', 'Tags have been created!')
 
 endfunction
 
