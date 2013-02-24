@@ -72,19 +72,11 @@
         " file and run again.  If the file is found, update the .incl file.
         " *
     " .incl File format:
-    " include_string  file_found  depth  type(local, header, normal?)
+    " include_string	file_found	depth	type(local, header, normal?)
 if exists('g:Itags_loaded')
     finish
 endif
 let g:Itags_loaded = 1
-
-if !exists('g:Itags_Proj_IncExts')
-    let g:Itags_Proj_IncExts = 'c|cpp|cc|php|h|thrift'
-endif
-
-if !exists('g:Itags_Proj_ExcExts')
-    let g:Itags_Proj_ExcExts = 'svn|git|tags|neocc|hg'
-endif
 
 function s:handleFileTags(name, depth)
     call s:WideMsg("echo ", "Generating tags file for:\t" . a:name)
@@ -279,7 +271,7 @@ function s:iTagMain(name)
     endif
     unlet b:processedFiles
     execute 'setl tags+='.b:tags
-    " redraw!
+    redraw!
 endfunction
 
 function s:Init()
@@ -334,8 +326,7 @@ function s:Init()
         endif
     endfor
 
-    command! -nargs=0 -bar ItagsRun call s:iTagMain(expand("%:p")) | call s:WideMsg('echo', 'Tags have been created!')
-    command! -nargs=0 -bar ItagsRunProj call s:iTagWalk(getcwd())
+    command! -nargs=0 -bar ItagsRun call s:iTagMain(expand("%:p"))
     command! -nargs=0 -bar ItagsRunLocal let b:Itags_Depth_local = g:Itags_Depth | let g:Itags_Depth=0 | ItagsRun | let g:Itags_Depth=b:Itags_Depth_local
 
     augroup iTagsAU
@@ -352,20 +343,6 @@ function s:Init()
 
     command! -nargs=0 -bar ItagsRegenAll let s:forceTags = 1 | let s:forceIncl = 1 | ItagsRun | let s:forceIncl=0 | let s:forceTags = 0
 
-    let b:allFiles = substitute(system('find '.getcwd().'/.tags/ -type f -name "*.tags"'),'\n','|','g')
-    let b:allFilesList = split(b:allFiles, '|')
-    for f in b:allFilesList
-        execute 'setl tags+='.f
-    endfor
-endfunction
-
-function! s:iTagWalk(root)
-    let b:allFiles = substitute(system('find -E '.a:root.' -type f -regex ".*\.('.g:Itags_Proj_IncExts.')" | grep -E -v "\.('.g:Itags_Proj_ExcExts.')"'),'\n','|','g')
-    let b:allFilesList = split(b:allFiles, '|')
-    for f in b:allFilesList
-        call s:iTagMain(f)
-    endfor
-    call s:WideMsg('echo', 'All tags have been created!')
 endfunction
 
 function! s:WideMsg(cmd, msg)
