@@ -320,7 +320,6 @@ function s:Init()
     " let RevTypeMapping = {'cpp': 'c++', 'cs': 'c#', 'expect': 'tcl', 'csh': 'sh', 'zsh': 'sh', }
     let supportList = split(tolower(system(g:Itags_Ctags_Cmd.' --list-languages')), '\n')
     for type in supportList
-        let type = tolower(type)
         if has_key(typeMapping, type)
             let supportList += typeMapping[type]
         endif
