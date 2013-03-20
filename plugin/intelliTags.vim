@@ -129,7 +129,7 @@ function s:handleFileTags(name, depth)
                     continue
                 endif
                 if !len(line[1])
-                    execute "cd! " . fnamemodify(a:name, ":p:h")
+                    execute "cd! " .'"'. fnamemodify(a:name, ":p:h").'"'
                     let incl_path = findfile(line[0])
                     cd! -
                     if !len(incl_path)
@@ -173,7 +173,7 @@ function s:createInclList(name)
             let fIncList += s:createInclList(child)
         endfor
     else
-        execute "cd! " . fnamemodify(a:name, ":p:h")
+        execute "cd! ".'"' . fnamemodify(a:name, ":p:h"). '"'
         for line in readfile(findfile(a:name))
            if line =~ &include
                if &include =~ '\\zs'
