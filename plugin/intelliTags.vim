@@ -185,11 +185,13 @@ function s:createInclList(name)
                if len(&inex)
                    silent! execute 'let mName = ' . &inex
                endif
-               let fIncTemp = s:findIncl(mName)
-               if !len(fIncTemp)
-                   call s:WideMsg('echomsg ', 'Unable to find include file: ' . mName . ' referrenced to in ' . a:name)
-               else
-                   let fIncList += fIncTemp
+               if len(mName)
+                   let fIncTemp = s:findIncl(mName)
+                   if !len(fIncTemp)
+                       call s:WideMsg('echomsg ', 'Unable to find include file: ' . mName . ' referrenced to in ' . a:name)
+                   else
+                       let fIncList += fIncTemp
+                   endif
                endif
            endif
         endfor
